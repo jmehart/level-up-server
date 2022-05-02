@@ -5,7 +5,7 @@
         "pk": 1,
         "fields": {
             "game": 2,
-            "descriptions": "Get ready for a race down rainbow road!",
+            "description": "Get ready for a race down rainbow road!",
             "date": "2022-04-29",
             "time": "19:00",
             "organizer": 1
@@ -16,7 +16,7 @@
         "pk": 2,
         "fields": {
             "game": 1,
-            "descriptions": "Find King Kandy and enjoy playing this classic board game!",
+            "description": "Find King Kandy and enjoy playing this classic board game!",
             "date": "2022-04-30",
             "time": "19:00",
             "organizer": 1
