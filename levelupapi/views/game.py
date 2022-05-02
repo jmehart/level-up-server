@@ -1,9 +1,12 @@
 """View module for handling requests about game types"""
 from django.http import HttpResponseServerError
+from django.core.exceptions import ValidationError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from levelupapi.models import Game
+from levelupapi.models.game_type import GameType
+from levelupapi.models.gamer import Gamer
 
 
 class GameView(ViewSet):
@@ -33,6 +36,41 @@ class GameView(ViewSet):
             games = games.filter(game_type_id=game_type)
         serializer = GameSerializer(games, many=True)
         return Response(serializer.data)
+    
+    '''
+    def create(self, request):
+        """Handle POST operations
+
+        Returns
+            Response -- JSON serialized game instance
+        """
+        gamer = Gamer.objects.get(user=request.auth.user)
+        game_type = GameType.objects.get(pk=request.data["game_type"])
+
+        game = Game.objects.create(
+            title=request.data["title"],
+            maker=request.data["maker"],
+            number_of_players=request.data["number_of_players"],
+            skill_level=request.data["skill_level"],
+            gamer=gamer,
+            game_type=game_type
+        )
+        serializer = GameSerializer(game)
+        return Response(serializer.data)
+    '''
+    
+    def create(self, request):
+        """Handle POST operations
+
+        Returns:
+            Response -- JSON serialized game instance
+        """
+        gamer = Gamer.objects.get(user=request.auth.user)
+        serializer = CreateGameSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(gamer=gamer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 
 class GameSerializer(serializers.ModelSerializer):
     """JSON serializer for game types
@@ -41,3 +79,9 @@ class GameSerializer(serializers.ModelSerializer):
         model = Game
         fields = ('id', 'title', 'maker', 'gamer_id', 'number_of_players', 'skill_level', 'game_type_id', 'game_type')
         depth = 1
+        
+        
+class CreateGameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ['id', 'title', 'maker', 'number_of_players', 'skill_level', 'game_type']        
