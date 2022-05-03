@@ -82,6 +82,13 @@ class GameView(ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    
+    def destroy(self, request, pk):
+        game = Game.objects.get(pk=pk)
+        game.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+                
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -89,7 +96,7 @@ class GameSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Game
-        fields = ('id', 'title', 'maker', 'gamer_id', 'number_of_players', 'skill_level', 'game_type_id', 'game_type')
+        fields = ('id', 'title', 'maker', 'gamer', 'number_of_players', 'skill_level', 'game_type')
         depth = 1
         
         
